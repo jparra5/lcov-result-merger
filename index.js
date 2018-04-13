@@ -82,6 +82,7 @@ function CoverageFile (filename) {
 CoverageFile.prototype.toString = function () {
   var header = 'SF:' + this.filename + '\n'
   var footer = 'end_of_record\n'
+  var lhCount = 0
 
   var body = this.DARecords.map(function (daRecord) {
     return daRecord.toString()
@@ -90,6 +91,16 @@ CoverageFile.prototype.toString = function () {
   body += this.BRDARecords.map(function (brdaRecord) {
     return brdaRecord.toString()
   }).join('')
+
+  body += 'LF:' + this.DARecords.length + '\n'
+
+  this.DARecords.forEach(function (daRecord) {
+    if (daRecord.hits > 0) {
+      lhCount++;
+    }
+  });
+
+  body += 'LH:' + lhCount + '\n'
 
   return header + body + footer
 }
